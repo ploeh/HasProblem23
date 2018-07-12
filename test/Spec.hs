@@ -22,8 +22,8 @@ main = defaultMain tests
 
 tests = [
     testGroup "Properties" [
-      testProperty "rndSelect returns result of correct length" (lenProp :: Int -> [Int] -> NonNegative Int -> Bool),
-      testProperty "rndSelect returns result of correct length" (lenProp :: Int -> String -> NonNegative Integer -> Bool),
+      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> [Int] -> NonNegative Int -> Bool),
+      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> String -> NonNegative Integer -> Bool),
       testProperty "rndGenSelect returns empty result when count is negative" (negLenProp :: Int -> [Int] -> Positive Int -> Bool)
     ],
     testGroup "Regression tests" $ hUnitTestToTests $ TestList [
