@@ -9,22 +9,27 @@ import Test.HUnit.Base
 import Test.QuickCheck
 import Lib
 
-lenProp :: Integral i => Int -> [a] -> NonNegative i -> Bool
-lenProp seed xs (NonNegative i) =
-  i == genericLength (rndGenSelect (mkStdGen seed) xs i)
+lenProp :: (Integral i, Show i) => Int -> NonEmptyList a -> NonNegative i -> Property
+lenProp seed (NonEmpty xs) (NonNegative i) =
+  i === genericLength (rndGenSelect (mkStdGen seed) xs i)
 
-negLenProp :: Integral i => Int -> [a] -> Positive i -> Bool
+negLenProp :: Integral i => Int -> [a] -> Positive i -> Property
 negLenProp seed xs (Positive i) =
-  0 == genericLength (rndGenSelect (mkStdGen seed) xs (-i))
+  0 === genericLength (rndGenSelect (mkStdGen seed) xs (-i))
+
+emptyListProp :: Integral i => Int -> NonNegative i -> Property
+emptyListProp seed (NonNegative i) =
+  0 === genericLength (rndGenSelect (mkStdGen seed) [] i)
 
 main :: IO ()
 main = defaultMain tests
 
 tests = [
     testGroup "Properties" [
-      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> [Int] -> NonNegative Int -> Bool),
-      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> String -> NonNegative Integer -> Bool),
-      testProperty "rndGenSelect returns empty result when count is negative" (negLenProp :: Int -> [Int] -> Positive Int -> Bool)
+      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> NonEmptyList Int -> NonNegative Int -> Property),
+      testProperty "rndGenSelect returns result of correct length" (lenProp :: Int -> NonEmptyList Char -> NonNegative Integer -> Property),
+      testProperty "rndGenSelect returns empty result when count is negative" (negLenProp :: Int -> [Int] -> Positive Int -> Property),
+      testProperty "rndGenSelect returns empty result when input is empty" (emptyListProp :: Int -> NonNegative Int -> Property)
     ],
     testGroup "Regression tests" $ hUnitTestToTests $ TestList [
       "rndGenSelect of chars returns correct result" ~: do
@@ -53,5 +58,10 @@ tests = [
         let actual = rndGenSelect rnd xs count
 
         return $ expected ~=? actual
+
+      ,
+      "rndSelect of empty string returns zero elements" ~: do
+        actual <- rndSelect "" 1
+        return $ "" @=? actual
     ]
   ]
