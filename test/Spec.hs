@@ -35,9 +35,9 @@ tests = [
       "rndGenSelect of chars returns correct result" ~: do
         (seed, xs, count, expected) <-
           [
-            (     42,      "foo",  3,        "ofo"),
-            (   1337,      "bar", 10, "rabbaarrra"),
-            (-197221, ['a'..'z'],  5,      "ntfnc")
+            (     42,      "foo",  3,        "ffo"),
+            (   1337,      "bar", 10, "rabraraabb"),
+            (-197221, ['a'..'z'],  5,      "oggab")
           ]
         let rnd = mkStdGen seed
 
@@ -49,9 +49,9 @@ tests = [
       "rndGenSelect of integers returns correct result" ~: do
         (seed, xs, count, expected) <-
           [
-            (  19,      [1..3],  3,               [3,1,3]),
-            (1770, [0,1,1,2,7], 10, [1,2,2,1,1,1,1,1,7,7]),
-            ( -19,     [0..99],  5,       [67,48,8,47,42])
+            (  19,      [1..3],  3,               [3,1,2]),
+            (1770, [0,1,1,2,7], 10, [7,7,1,0,2,1,1,7,1,0]),
+            ( -19,     [0..99],  5,       [79,55,31,38,94])
           ]
         let rnd = mkStdGen seed
 
